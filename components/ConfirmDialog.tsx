@@ -39,7 +39,7 @@ export function ConfirmDialog({
       onClick={(e) => {
         if (e.target === dialogRef.current) onCancel();
       }}
-      className="rounded-2xl p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm"
+      className="m-auto rounded-2xl p-0 backdrop:bg-black/40 backdrop:backdrop-blur-sm"
     >
       <div
         onClick={(e) => e.stopPropagation()}

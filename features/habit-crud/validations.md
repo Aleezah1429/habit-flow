@@ -38,3 +38,4 @@
 - [ ] V21: All interactive elements reachable by Tab key
 - [ ] V22: Esc closes any open dialog
 - [ ] V23: No console errors or warnings during any of the above flows
+- [ ] V24: Both `HabitFormDialog` and `ConfirmDialog` appear visually centered (Tailwind preflight resets `margin: 0` on `<dialog>`, so `m-auto` is required to restore native centering)
