@@ -5,12 +5,12 @@
 
 ---
 
-## Phase 1 — Habit CRUD (the foundation)
-- [ ] Add a habit (name + emoji icon + color)
-- [ ] List all habits on home page
-- [ ] Edit habit name/icon/color
-- [ ] Delete a habit (with confirm)
-- [ ] Persist to `localStorage`
+## Phase 1 — Habit CRUD (the foundation) ✅
+- [x] Add a habit (name + lucide icon + color)
+- [x] List all habits on home page
+- [x] Edit habit name/icon/color
+- [x] Delete a habit (with confirm)
+- [x] Persist to `localStorage`
 
 **Definition of done**: User can refresh the page and habits are still there.
 
