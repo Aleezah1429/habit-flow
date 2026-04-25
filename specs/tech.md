@@ -6,7 +6,8 @@
 | Framework | **Next.js 15** (App Router) | Familiar to team; SSR not strictly needed but futureproof |
 | Language | **TypeScript** (strict) | Type safety from day one — no `any` allowed |
 | Styling | **Tailwind CSS** | Fast iteration, utility-first |
-| State | **React `useState` + `useReducer`** | No Redux/Zustand needed for v1 |
+| State (Phase 1–5) | **React `useState` + custom hooks** | Simple enough; no library needed yet |
+| State (Phase 6+) | **Zustand** | Introduce when `/stats` page needs to share state with home — natural "pain → tool" moment |
 | Persistence | **`localStorage`** (v1) | No backend needed; future: swap with Supabase |
 | Dates | **`date-fns`** | Lightweight, tree-shakable |
 | Charts | **`recharts`** | When we hit Phase 4 (analytics) |
