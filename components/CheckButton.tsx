@@ -14,11 +14,11 @@ export function CheckButton({ checked, color, habitName, onToggle }: CheckButton
   const palette = COLOR_OPTIONS.find((c) => c.name === color) ?? COLOR_OPTIONS[0];
 
   const base =
-    'flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 focus-visible:ring-offset-2 dark:focus-visible:ring-zinc-500';
+    'flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-200 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-400 dark:focus-visible:ring-blue-500 dark:focus-visible:ring-offset-zinc-900';
 
   const variant = checked
-    ? `${palette.swatchClass} text-white hover:brightness-110`
-    : 'border-2 border-zinc-300 text-transparent hover:border-zinc-400 dark:border-zinc-600 dark:hover:border-zinc-500';
+    ? `${palette.swatchClass} text-white shadow-sm hover:brightness-110 active:scale-95`
+    : 'border-2 border-zinc-300 text-transparent hover:border-zinc-500 hover:bg-zinc-50 active:scale-95 dark:border-zinc-600 dark:hover:border-zinc-400 dark:hover:bg-zinc-800';
 
   return (
     <button
@@ -36,7 +36,11 @@ export function CheckButton({ checked, color, habitName, onToggle }: CheckButton
       }}
       className={`${base} ${variant}`}
     >
-      <Check size={16} strokeWidth={3} className={checked ? 'opacity-100' : 'opacity-0'} />
+      <Check
+        size={16}
+        strokeWidth={3.5}
+        className={`transition-all duration-200 ${checked ? 'scale-100 opacity-100' : 'scale-50 opacity-0'}`}
+      />
     </button>
   );
 }

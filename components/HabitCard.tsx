@@ -17,15 +17,14 @@ export function HabitCard({ habit, checked, onToggle, onEdit, onDelete }: HabitC
   const Icon = icons[habit.iconName];
   const color = COLOR_OPTIONS.find((c) => c.name === habit.color) ?? COLOR_OPTIONS[0];
 
-  const cardBg = checked
-    ? `${color.bgSoftClass} border-transparent dark:bg-zinc-800/60`
-    : 'bg-white border-zinc-200 hover:border-zinc-300 dark:bg-zinc-900 dark:border-zinc-800 dark:hover:border-zinc-700';
+  const cardBase =
+    'group relative flex items-center gap-3 rounded-2xl border p-4 transition-all duration-200';
+  const cardVariant = checked
+    ? `${color.bgSoftClass} border-transparent shadow-sm dark:bg-zinc-800/60 dark:border-zinc-700/40`
+    : 'border-zinc-200/70 bg-white/80 backdrop-blur-sm hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-sm dark:border-zinc-800/80 dark:bg-zinc-900/60 dark:hover:border-zinc-700';
 
   return (
-    <article
-      data-checked={checked}
-      className={`group flex items-center gap-3 rounded-xl border p-4 transition hover:shadow-sm ${cardBg}`}
-    >
+    <article data-checked={checked} className={`${cardBase} ${cardVariant}`}>
       <CheckButton
         checked={checked}
         color={habit.color}
@@ -33,12 +32,16 @@ export function HabitCard({ habit, checked, onToggle, onEdit, onDelete }: HabitC
         onToggle={onToggle}
       />
       <div
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-lg ${color.bgSoftClass} ${color.textClass} dark:brightness-110`}
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${color.bgSoftClass} ${color.textClass} ring-1 ring-inset ring-black/5 dark:ring-white/10 dark:brightness-110`}
       >
         <Icon size={20} />
       </div>
-      <div className="flex-1 truncate">
-        <h3 className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
+      <div className="min-w-0 flex-1">
+        <h3
+          className={`truncate text-sm font-medium text-zinc-900 dark:text-zinc-50 ${
+            checked ? 'line-through decoration-zinc-400/60 decoration-2' : ''
+          }`}
+        >
           {habit.name}
         </h3>
       </div>
