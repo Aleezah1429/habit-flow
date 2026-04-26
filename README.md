@@ -2,13 +2,15 @@
 
 A minimal, fast habit tracker. Mark a habit done today — watch your streak grow. No accounts, no notifications, no bloat.
 
-> **Status**: v0.1.0 — Phase 1 (Habit CRUD) shipped. See [CHANGELOG.md](./CHANGELOG.md) and [specs/roadmap.md](./specs/roadmap.md) for what's next.
+> **Status**: v0.2.0 — Phase 2 (Daily check-in) shipped. See [CHANGELOG.md](./CHANGELOG.md) and [specs/roadmap.md](./specs/roadmap.md) for what's next.
 
 ## What's inside
 
 - **Add habits** with a name, an icon (30 curated lucide icons), and a color.
 - **Edit / delete** habits via a per-card three-dot menu (delete asks for confirmation).
-- **Persistence** to `localStorage` — survives refresh, no backend needed.
+- **One-click "done today"** — round check button on each card; click again to un-mark. Card fills with a soft tint of the habit color when checked.
+- **Today's date** prominently shown on the home page (e.g. *Sunday, April 26*).
+- **Persistence** to `localStorage` — habits *and* today's check-ins survive refresh, no backend needed.
 - **Empty state** when there are no habits yet.
 - **Responsive** — 1 / 2 / 3 column grid for mobile / tablet / desktop.
 
@@ -73,7 +75,7 @@ Step 2 and Step 6 are captured as Claude Code skills so they don't have to be re
 Phases (each = one shippable PR):
 
 - [x] **v0.1.0** — Phase 1: Habit CRUD
-- [ ] v0.2.0 — Phase 2: Daily check-in
+- [x] **v0.2.0** — Phase 2: Daily check-in
 - [ ] v0.3.0 — Phase 3: Streaks
 - [ ] v0.4.0 — Phase 4: History heatmap
 - [ ] v0.5.0 — Phase 5: Categories & filters
@@ -86,5 +88,6 @@ Detail in [specs/roadmap.md](./specs/roadmap.md). Loose ideas in [todo.md](./tod
 
 - No `any` type — use `unknown` and narrow.
 - All `localStorage` access goes through [lib/storage.ts](./lib/storage.ts) — single boundary.
+- All date math goes through [lib/date.ts](./lib/date.ts) — single boundary.
 - Every feature must have a `validations.md` before merging.
 - Tests live in `tests/`, not co-located.
