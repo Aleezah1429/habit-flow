@@ -13,7 +13,7 @@ export function TodayHeader() {
   return (
     <h2
       aria-label="Today"
-      className="text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-50"
+      className="font-serif text-3xl font-medium italic tracking-tight text-zinc-900 sm:text-4xl dark:text-zinc-50"
     >
       {label || ' '}
     </h2>
