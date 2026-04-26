@@ -4,6 +4,27 @@ All notable changes to HabitFlow are documented here. Format follows [Keep a Cha
 
 ---
 
+## [v0.2.0] — 2026-04-26
+
+Daily check-in lands. Mark a habit done today with one click; refresh keeps today's state. Phase 2 of the roadmap.
+
+### Added
+- Round check button on every habit card to mark a habit done today; click again to un-mark (mistake recovery).
+- Visible "done today" state — the card itself fills with a soft tint of the habit's color and the check button fills with the swatch color.
+- Today's date heading at the top of the home page (e.g. `"Sunday, April 26"`), so the page is grounded in *now*.
+- Storage extended with a top-level `completions: { [habitId]: ['YYYY-MM-DD', ...] }` map; `getCompletions`, `markDone`, `unmarkDone`, `isDone`.
+- `lib/date.ts` as the single boundary for date math (`todayKey`, `formatToday`), per the same rule that scopes `lib/storage.ts`.
+- `useHabits` hook now exposes `toggleToday(habitId)` and `isDoneToday(habitId)`.
+- 12 new tests covering check-in storage (round-trip, idempotency, no-op unmark, forward-compat with old data) and toggle UX (sibling independence, hydration, no menu collision, deletion clears completions).
+- `date-fns` added as a dependency (was already declared in `specs/tech.md`).
+
+### Changed
+- `deleteHabit(id)` now also drops that habit's completions entry, preventing orphan history.
+- `<HabitCard />` API: now requires `checked` and `onToggle` props; clicks on the card body do not toggle (only the dedicated `<CheckButton />` does), which keeps the three-dot menu unaffected.
+- Header redesigned: the small "HabitFlow" tagline is now an eyebrow above the prominent today's-date heading.
+
+---
+
 ## [v0.1.0] — 2026-04-25
 
 First shippable cut: full CRUD over local-only habits. Phase 1 of the roadmap.
