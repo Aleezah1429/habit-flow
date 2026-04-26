@@ -6,6 +6,7 @@ import { useHabits } from '@/hooks/useHabits';
 import { HabitCard } from '@/components/HabitCard';
 import { HabitFormDialog, type HabitFormValues } from '@/components/HabitFormDialog';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { TodayHeader } from '@/components/TodayHeader';
 import type { Habit } from '@/lib/types';
 
 type DialogState =
@@ -14,7 +15,7 @@ type DialogState =
   | { kind: 'edit'; habit: Habit };
 
 export default function Home() {
-  const { habits, hydrated, add, update, remove } = useHabits();
+  const { habits, hydrated, add, update, remove, toggleToday, isDoneToday } = useHabits();
   const [dialog, setDialog] = useState<DialogState>({ kind: 'closed' });
   const [pendingDelete, setPendingDelete] = useState<Habit | null>(null);
 
@@ -31,19 +32,17 @@ export default function Home() {
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
-      <header className="flex items-center justify-between">
+      <header className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <p className="text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
             HabitFlow
-          </h1>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            Build daily habits, one tick at a time.
           </p>
+          <TodayHeader />
         </div>
         <button
           type="button"
           onClick={() => setDialog({ kind: 'create' })}
-          className="flex items-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="flex shrink-0 items-center gap-1.5 rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
           <Plus size={16} /> New habit
         </button>
@@ -68,6 +67,8 @@ export default function Home() {
               <HabitCard
                 key={habit.id}
                 habit={habit}
+                checked={isDoneToday(habit.id)}
+                onToggle={() => toggleToday(habit.id)}
                 onEdit={() => setDialog({ kind: 'edit', habit })}
                 onDelete={() => setPendingDelete(habit)}
               />

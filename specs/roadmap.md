@@ -16,11 +16,11 @@
 
 ---
 
-## Phase 2 — Daily check-in
-- [ ] Mark a habit "done today" with one click
-- [ ] Visual state: checked vs unchecked
-- [ ] Un-mark (mistake recovery)
-- [ ] Show today's date prominently
+## Phase 2 — Daily check-in ✅
+- [x] Mark a habit "done today" with one click
+- [x] Visual state: checked vs unchecked
+- [x] Un-mark (mistake recovery)
+- [x] Show today's date prominently
 
 **Definition of done**: One-click logging works; refresh preserves today's state.
 

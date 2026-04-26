@@ -48,6 +48,10 @@ export interface Habit {
   createdAt: string;
 }
 
+export type DateKey = string;
+
+export type Completions = Record<string, DateKey[]>;
+
 export interface ColorOption {
   name: HabitColor;
   swatchClass: string;
