@@ -51,7 +51,7 @@ tests/                    # Vitest test files
 
 ## How this project is built — *spec-driven development*
 
-Every feature follows the same 7-step rhythm. The discipline is **think on paper before typing code**.
+Every feature follows the same 7-step rhythm. The discipline is **think on paper before typing code**. Full reference + cheat sheet in **[WORKFLOW.md](./WORKFLOW.md)** — read it before starting any new phase.
 
 | Step | Output |
 |---|---|
