@@ -4,6 +4,27 @@ All notable changes to HabitFlow are documented here. Format follows [Keep a Cha
 
 ---
 
+## [v0.3.0] — 2026-04-28
+
+Streaks land. Every habit card now shows the current consecutive-day streak (with a flame icon) and the all-time longest run. Phase 3 of the roadmap.
+
+### Added
+- Per-habit "🔥 N day streak" + "Best N" display on every card.
+- `lib/streak.ts` — pure module with `currentStreak`, `longestStreak`, `computeStreaks`. No React, no storage; tested with 11 unit cases (gap resets, future-date defense, duplicate-date defense, today-must-be-earned semantics, the roadmap's 7-day "definition of done").
+- `lib/date.ts` extended with `previousDay()` so the streak walker stays inside the date boundary (`date-fns` `subDays`).
+- `<StreakBadge />` component — graceful "No streak yet" empty state until the user has any history, then a compact two-line badge.
+- 3 new RTL tests covering the on-page streak display: empty state, live update on mark, recompute on un-mark.
+
+### Changed
+- `<HabitCard />` API: now accepts `dates: readonly DateKey[]` and `todayKey: DateKey` props. The three-dot menu is now positioned at the card's top-right corner so the streak block can claim the inline right column.
+- `app/page.tsx` computes `todayKey()` once per render and passes it down — single source of truth for "today" across the page.
+
+### Decisions worth recording
+- **"Today must be earned"** — current streak is 0 until today is actually checked, even if a long run ends yesterday. Pushes consistent daily action.
+- **Longest is computed from current data, not a stored high-water mark** — keeps the mission's *honest history* value. Un-marking a day that was part of the longest run will reduce it; the spec was tightened to reflect this after the first test run revealed the contradiction.
+
+---
+
 ## [v0.2.0] — 2026-04-26
 
 Daily check-in lands. Mark a habit done today with one click; refresh keeps today's state. Phase 2 of the roadmap.
