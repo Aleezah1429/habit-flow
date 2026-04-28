@@ -7,6 +7,7 @@ import { HabitCard } from '@/components/HabitCard';
 import { HabitFormDialog, type HabitFormValues } from '@/components/HabitFormDialog';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { TodayHeader } from '@/components/TodayHeader';
+import { todayKey } from '@/lib/date';
 import type { Habit } from '@/lib/types';
 
 type DialogState =
@@ -15,10 +16,11 @@ type DialogState =
   | { kind: 'edit'; habit: Habit };
 
 export default function Home() {
-  const { habits, hydrated, add, update, remove, toggleToday, isDoneToday } = useHabits();
+  const { habits, completions, hydrated, add, update, remove, toggleToday, isDoneToday } = useHabits();
   const [dialog, setDialog] = useState<DialogState>({ kind: 'closed' });
   const [pendingDelete, setPendingDelete] = useState<Habit | null>(null);
 
+  const today = todayKey();
   const total = habits.length;
   const doneCount = hydrated ? habits.filter((h) => isDoneToday(h.id)).length : 0;
   const percent = total === 0 ? 0 : Math.round((doneCount / total) * 100);
@@ -114,6 +116,8 @@ export default function Home() {
                 key={habit.id}
                 habit={habit}
                 checked={isDoneToday(habit.id)}
+                dates={completions[habit.id] ?? []}
+                todayKey={today}
                 onToggle={() => toggleToday(habit.id)}
                 onEdit={() => setDialog({ kind: 'edit', habit })}
                 onDelete={() => setPendingDelete(habit)}

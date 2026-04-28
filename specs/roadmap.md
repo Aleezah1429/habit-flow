@@ -26,11 +26,11 @@
 
 ---
 
-## Phase 3 — Streaks
-- [ ] Calculate current streak per habit (consecutive days done)
-- [ ] Calculate longest-ever streak
-- [ ] Display both on each habit card
-- [ ] Streak breaks correctly when a day is skipped
+## Phase 3 — Streaks ✅
+- [x] Calculate current streak per habit (consecutive days done)
+- [x] Calculate longest-ever streak
+- [x] Display both on each habit card
+- [x] Streak breaks correctly when a day is skipped
 
 **Definition of done**: Manually setting 7 days done → shows "7 day streak".
 
