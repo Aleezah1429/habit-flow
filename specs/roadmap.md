@@ -36,10 +36,10 @@
 
 ---
 
-## Phase 4 — History heatmap
-- [ ] 12-week heatmap per habit (GitHub-contributions style)
-- [ ] Click any cell to toggle that day's status
-- [ ] Hover shows date + status
+## Phase 4 — History heatmap ✅
+- [x] 12-week heatmap per habit (GitHub-contributions style)
+- [x] Click any cell to toggle that day's status
+- [x] Hover shows date + status
 
 **Definition of done**: Heatmap matches stored data; backfilling past days works.
 

@@ -12,7 +12,14 @@ import {
   unmarkDone,
   isDone,
 } from '@/lib/storage';
-import { todayKey, previousDay } from '@/lib/date';
+import {
+  todayKey,
+  previousDay,
+  addDays,
+  mondayOfWeek,
+  buildHeatmapGrid,
+  formatHeatmapTitle,
+} from '@/lib/date';
 import { currentStreak, longestStreak, computeStreaks } from '@/lib/streak';
 
 describe('storage layer', () => {
@@ -234,6 +241,64 @@ describe('date helpers', () => {
     expect(previousDay('2026-05-01')).toBe('2026-04-30');
     expect(previousDay('2026-01-01')).toBe('2025-12-31');
   });
+
+  test('addDays handles positive and negative shifts across months', () => {
+    expect(addDays('2026-04-26', 1)).toBe('2026-04-27');
+    expect(addDays('2026-04-26', -1)).toBe('2026-04-25');
+    expect(addDays('2026-04-30', 2)).toBe('2026-05-02');
+    expect(addDays('2026-01-01', -1)).toBe('2025-12-31');
+    expect(addDays('2026-04-26', 0)).toBe('2026-04-26');
+  });
+
+  test('mondayOfWeek returns the same date for a Monday', () => {
+    // 2026-04-27 is a Monday
+    expect(mondayOfWeek('2026-04-27')).toBe('2026-04-27');
+  });
+
+  test('mondayOfWeek finds the prior Monday for a Sunday', () => {
+    // 2026-04-26 is a Sunday; its Monday-start week began 2026-04-20
+    expect(mondayOfWeek('2026-04-26')).toBe('2026-04-20');
+  });
+
+  test('mondayOfWeek finds the prior Monday for a midweek day', () => {
+    // 2026-04-30 is a Thursday
+    expect(mondayOfWeek('2026-04-30')).toBe('2026-04-27');
+  });
+
+  test('buildHeatmapGrid returns 12 columns × 7 rows = 84 cells', () => {
+    const grid = buildHeatmapGrid('2026-04-26');
+    expect(grid).toHaveLength(12);
+    grid.forEach((col) => expect(col).toHaveLength(7));
+    expect(grid.flat()).toHaveLength(84);
+  });
+
+  test('buildHeatmapGrid: rightmost column contains today; today appears in the row matching its weekday', () => {
+    // 2026-04-26 = Sunday → row index 6 (Mon=0..Sun=6)
+    const grid = buildHeatmapGrid('2026-04-26');
+    const lastCol = grid[11];
+    expect(lastCol).toContain('2026-04-26');
+    expect(lastCol[6]).toBe('2026-04-26');
+    expect(lastCol[0]).toBe('2026-04-20'); // Monday of that week
+  });
+
+  test('buildHeatmapGrid: rows are sorted Mon→Sun within each column', () => {
+    const grid = buildHeatmapGrid('2026-04-26');
+    grid.forEach((col) => {
+      for (let i = 1; i < col.length; i++) {
+        expect(col[i]).toBe(addDays(col[i - 1], 1));
+      }
+    });
+  });
+
+  test('buildHeatmapGrid: leftmost column starts (weeks-1)*7 days before the last column Monday', () => {
+    const grid = buildHeatmapGrid('2026-04-26');
+    expect(grid[0][0]).toBe('2026-02-02'); // 11 weeks before Monday 2026-04-20
+  });
+
+  test('formatHeatmapTitle includes weekday, month, day, and status', () => {
+    expect(formatHeatmapTitle('2026-04-26', true)).toBe('Sun, Apr 26 — done');
+    expect(formatHeatmapTitle('2026-04-21', false)).toBe('Tue, Apr 21 — not done');
+  });
 });
 
 describe('streak math', () => {
@@ -314,6 +379,50 @@ describe('Home page — streak display', () => {
     render(<Home />);
     await user.click(await screen.findByRole('checkbox', { name: /mark read as done today/i }));
     expect(await screen.findByLabelText(/1 day current streak, best 1/i)).toBeInTheDocument();
+  });
+
+  test('expanding the heatmap reveals 84 cells; collapse hides them', async () => {
+    const user = userEvent.setup();
+    addHabit({ name: 'Read', iconName: 'Book', color: 'blue' });
+    render(<Home />);
+    const expand = await screen.findByRole('button', { name: /show history/i });
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument();
+    await user.click(expand);
+    const grid = screen.getByRole('grid');
+    expect(within(grid).getAllByRole('gridcell')).toHaveLength(84);
+    await user.click(screen.getByRole('button', { name: /hide history/i }));
+    expect(screen.queryByRole('grid')).not.toBeInTheDocument();
+  });
+
+  test('clicking a past cell in the heatmap toggles that day in storage', async () => {
+    const user = userEvent.setup();
+    const h = addHabit({ name: 'Read', iconName: 'Book', color: 'blue' });
+    render(<Home />);
+    await user.click(await screen.findByRole('button', { name: /show history/i }));
+    const today = todayKey();
+    const yesterdayKey = previousDay(today);
+    const yesterdayCell = screen.getByRole('gridcell', {
+      name: new RegExp(`${formatHeatmapTitle(yesterdayKey, false)}`, 'i'),
+    });
+    await user.click(yesterdayCell);
+    expect(getCompletions()[h.id]).toContain(yesterdayKey);
+  });
+
+  test('streak badge updates after backfilling yesterday via the heatmap', async () => {
+    const user = userEvent.setup();
+    const h = addHabit({ name: 'Read', iconName: 'Book', color: 'blue' });
+    const today = todayKey();
+    markDone(h.id, today);
+    render(<Home />);
+    expect(await screen.findByLabelText(/1 day current streak, best 1/i)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /show history/i }));
+    const yesterdayKey = previousDay(today);
+    await user.click(
+      screen.getByRole('gridcell', {
+        name: new RegExp(formatHeatmapTitle(yesterdayKey, false), 'i'),
+      }),
+    );
+    expect(await screen.findByLabelText(/2 days current streak, best 2/i)).toBeInTheDocument();
   });
 
   test('un-marking today: current goes to 0; longest reflects what remains in data', async () => {

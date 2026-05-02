@@ -16,7 +16,17 @@ type DialogState =
   | { kind: 'edit'; habit: Habit };
 
 export default function Home() {
-  const { habits, completions, hydrated, add, update, remove, toggleToday, isDoneToday } = useHabits();
+  const {
+    habits,
+    completions,
+    hydrated,
+    add,
+    update,
+    remove,
+    toggleToday,
+    toggleDate,
+    isDoneToday,
+  } = useHabits();
   const [dialog, setDialog] = useState<DialogState>({ kind: 'closed' });
   const [pendingDelete, setPendingDelete] = useState<Habit | null>(null);
 
@@ -119,6 +129,7 @@ export default function Home() {
                 dates={completions[habit.id] ?? []}
                 todayKey={today}
                 onToggle={() => toggleToday(habit.id)}
+                onToggleDate={(dateKey) => toggleDate(habit.id, dateKey)}
                 onEdit={() => setDialog({ kind: 'edit', habit })}
                 onDelete={() => setPendingDelete(habit)}
               />

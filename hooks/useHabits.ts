@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import type { Habit, Completions } from '@/lib/types';
+import type { Habit, Completions, DateKey } from '@/lib/types';
 import {
   getHabits,
   getCompletions,
@@ -57,19 +57,23 @@ export function useHabits() {
     });
   }, []);
 
-  const toggleToday = useCallback((habitId: string) => {
-    const key = todayKey();
+  const toggleDate = useCallback((habitId: string, dateKey: DateKey) => {
     setCompletions((prev) => {
       const existing = prev[habitId] ?? [];
-      const isOn = existing.includes(key);
+      const isOn = existing.includes(dateKey);
       if (isOn) {
-        unmarkDone(habitId, key);
-        return { ...prev, [habitId]: existing.filter((d) => d !== key) };
+        unmarkDone(habitId, dateKey);
+        return { ...prev, [habitId]: existing.filter((d) => d !== dateKey) };
       }
-      markDone(habitId, key);
-      return { ...prev, [habitId]: [...existing, key] };
+      markDone(habitId, dateKey);
+      return { ...prev, [habitId]: [...existing, dateKey] };
     });
   }, []);
+
+  const toggleToday = useCallback(
+    (habitId: string) => toggleDate(habitId, todayKey()),
+    [toggleDate],
+  );
 
   const isDoneToday = useCallback(
     (habitId: string): boolean => {
@@ -79,5 +83,15 @@ export function useHabits() {
     [completions],
   );
 
-  return { habits, completions, hydrated, add, update, remove, toggleToday, isDoneToday };
+  return {
+    habits,
+    completions,
+    hydrated,
+    add,
+    update,
+    remove,
+    toggleToday,
+    toggleDate,
+    isDoneToday,
+  };
 }
