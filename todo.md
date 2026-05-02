@@ -2,20 +2,22 @@
 
 Loose, informal capture. **Not a roadmap** — for that see [specs/roadmap.md](./specs/roadmap.md). Things here are either too small to be a phase, or might never happen.
 
-## Up next (Phase 4 prep — History heatmap)
+## Up next (Phase 5 prep — Categories & filters)
 
-- 12 weeks × 7 days = 84 cells per habit. Per-row (one habit) or all-habits-stacked? Lean per-row inside an expanded card view, or new `/habit/[id]` route.
-- Click any cell → toggle that day's status. This means `lib/storage.ts` needs a `setDoneOn(habitId, dateKey, done: bool)` helper (or just exposing `markDone` / `unmarkDone` for arbitrary dates is enough).
-- Hover / focus on a cell → tooltip "Tue, Apr 22 — done" / "Tue, Apr 22 — not done".
-- Color scale: a single tint of the habit color works (binary state — done or not). No "intensity" because there is no count, just a boolean.
-- Date range: build the 12 weeks ending today; Sunday-start vs Monday-start needs a quick decision.
-- Storage shape stays the same — `completions[habitId]: DateKey[]` already supports past dates; we just expose UI to write them.
-- Perf: 12×7×N habits ~ 1k cells worst case. SVG vs CSS grid — CSS grid is simpler.
+- Decide: category as a fixed enum (Health/Mind/Work/Other) or free-text tag? Fixed enum keeps the "minimal" feel and matches the curated-icons-and-colors precedent.
+- Storage shape: add `category: HabitCategory` to `Habit`. Migration: existing habits without a category default to `'other'` on read (defensive, in `lib/storage.ts`).
+- Filter UI: a row of chips at the top of the home page? Or a dropdown next to "New habit"? Chips are clearer at a glance.
+- "All" pseudo-filter that's always selected by default and never disabled.
+- Empty-filter state: "No habits in *Health* yet — add one to get started" (vs. global empty state).
+- Category color accent: a small dot or stripe on the card. Don't conflict with the existing per-habit color (which is identity, not category).
+- Form: when creating a habit, category picker sits between Icon and Color sections.
 
 ## Polish ideas (small, can ship anytime)
 
 - Subtle entrance animation when a new habit card is added.
 - Animate the streak number on increment (slight bounce) when toggle flips.
+- Heatmap: tiny month label row above the grid (Feb / Mar / Apr) so the time axis is more readable.
+- Heatmap: a minimum-touch-target audit at 375px — currently cells are tiny. Maybe a "compact / large" toggle.
 - Form: cmd/ctrl + Enter to save.
 - Form: pressing Tab from name → first icon.
 - Card hover: show a subtle "drag handle" in preparation for Phase 7 reorder.
@@ -28,8 +30,8 @@ Loose, informal capture. **Not a roadmap** — for that see [specs/roadmap.md](.
 - On mobile, the "New habit" button text could be hidden in favor of just `+` icon.
 - First render flashes empty state for a moment because `hydrated` only flips on next tick — investigate `useSyncExternalStore` instead.
 - `TodayHeader` renders an empty space until `useEffect` runs (avoids SSR/local-time mismatch). Acceptable for now; revisit if we ever want SSR.
-- If the tab is left open across midnight, cards still show *yesterday*'s checked state until refresh — document, don't fix in v1 (auto-rollover is out of scope per plan.md).
-- `<HabitCard />` is now ~50 lines and reads from completions; if Phase 4 lets cells edit past days, the card may need split into a "compact" view + an "expanded" view.
+- If the tab is left open across midnight, the heatmap's "today" doesn't roll over until refresh. Document this rather than fix in v1.
+- Heatmap cells use `aspect-square`; on very narrow screens they may be sub-touch-target size. Audit at 320px.
 
 ## Tech debt
 
@@ -37,7 +39,8 @@ Loose, informal capture. **Not a roadmap** — for that see [specs/roadmap.md](.
 - Extract dialog-centering CSS into globals.css instead of repeating `m-auto` per dialog.
 - `useHabits.update` and `storage.updateHabit` duplicate the patch-merge logic — extract a `applyHabitPatch(habit, patch)` helper to `lib/types.ts`.
 - Pre-existing lint error: `react-hooks/set-state-in-effect` flags the hydration `useEffect` in `useHabits`. Standard hydration pattern; revisit by trying `useSyncExternalStore` for the localStorage subscription.
-- `longestStreak` calls `previousDay` once per array element during the sort-walk (string→date→string parse). For 365×N years this is fine; if Phase 6 stats start crunching multi-year data, swap to numeric day-index arithmetic.
+- `longestStreak` calls `previousDay` once per array element during the sort-walk. Fine for v1; revisit if Phase 6 stats start crunching multi-year data.
+- `HabitCard` is now ~90 lines and has multiple concerns (display, expansion state, streak compute, heatmap). Consider splitting into `HabitCardCompact` + `HabitCardExpanded` if Phase 5 (categories) adds more.
 
 ## Maybe-someday (out of v1 scope)
 
@@ -46,9 +49,10 @@ Loose, informal capture. **Not a roadmap** — for that see [specs/roadmap.md](.
 - Habit templates (Atomic Habits starter pack).
 - Keyboard-only power-user mode.
 - Export/import data as JSON (already in Phase 7 — listed here for visibility).
+- Drag-across-cells to bulk-toggle multiple days in the heatmap.
 
 ## Docs / process
 
-- After Phase 4 ships, write a `phase-impl` skill capturing Step 3's recurring rhythm (foundation files → components → page wiring) — pattern is now visible across three phases.
-- Add a "Why I built this" section to README once Phase 4 (heatmap) is in.
-- Consider: a tiny `scripts/seed-demo-data.ts` to populate `localStorage` with multi-week history for Phase 4/6 dev work without hand-clicking.
+- After Phase 5 ships, write a `phase-impl` skill capturing Step 3's recurring rhythm (foundation files → components → page wiring) — pattern is now visible across four phases.
+- Add a "Why I built this" section to README once Phase 6 (stats) is in.
+- Consider: a tiny `scripts/seed-demo-data.ts` to populate `localStorage` with multi-week history for Phase 6 dev work without hand-clicking.

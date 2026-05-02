@@ -2,7 +2,7 @@
 
 A minimal, fast habit tracker. Mark a habit done today — watch your streak grow. No accounts, no notifications, no bloat.
 
-> **Status**: v0.3.0 — Phase 3 (Streaks) shipped. See [CHANGELOG.md](./CHANGELOG.md) and [specs/roadmap.md](./specs/roadmap.md) for what's next.
+> **Status**: v0.4.0 — Phase 4 (History heatmap) shipped. See [CHANGELOG.md](./CHANGELOG.md) and [specs/roadmap.md](./specs/roadmap.md) for what's next.
 
 ## What's inside
 
@@ -11,7 +11,8 @@ A minimal, fast habit tracker. Mark a habit done today — watch your streak gro
 - **One-click "done today"** — round check button on each card; click again to un-mark. Card fills with a soft tint of the habit color when checked.
 - **Today's date** prominently shown on the home page (e.g. *Sunday, April 26*).
 - **Streaks** — every card shows your current consecutive-day streak (🔥) plus your all-time best, computed live from local data.
-- **Persistence** to `localStorage` — habits *and* today's check-ins survive refresh, no backend needed.
+- **12-week history heatmap** — expand any card to see (and edit) the last 12 weeks. Click any past or today cell to backfill or correct it.
+- **Persistence** to `localStorage` — habits *and* check-ins survive refresh, no backend needed.
 - **Empty state** when there are no habits yet.
 - **Responsive** — 1 / 2 / 3 column grid for mobile / tablet / desktop.
 
@@ -78,7 +79,7 @@ Phases (each = one shippable PR):
 - [x] **v0.1.0** — Phase 1: Habit CRUD
 - [x] **v0.2.0** — Phase 2: Daily check-in
 - [x] **v0.3.0** — Phase 3: Streaks
-- [ ] v0.4.0 — Phase 4: History heatmap
+- [x] **v0.4.0** — Phase 4: History heatmap
 - [ ] v0.5.0 — Phase 5: Categories & filters
 - [ ] v0.6.0 — Phase 6: Stats dashboard (Zustand introduced here)
 - [ ] v1.0.0 — Phase 7: Polish & ship
