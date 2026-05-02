@@ -4,6 +4,29 @@ All notable changes to HabitFlow are documented here. Format follows [Keep a Cha
 
 ---
 
+## [v0.4.0] — 2026-05-02
+
+History lands. Each habit card now expands to reveal a 12-week heatmap (Monday-start, GitHub-style). Click any past or today cell to backfill or correct that day. Phase 4 of the roadmap.
+
+### Added
+- 12-week × 7-day heatmap per habit, expandable via a chevron on the card.
+- Click any past or today cell to toggle that day's status — fixes the long-standing "I forgot to log yesterday" friction.
+- Native browser tooltips on every cell: `Mon, Apr 21 — done` / `Tue, Apr 22 — not done`.
+- Future cells render as visibly-faded `aria-disabled` placeholders so the grid stays a perfect 12×7 = 84 cells regardless of weekday.
+- `lib/date.ts` extended with `addDays`, `mondayOfWeek`, `buildHeatmapGrid`, `formatHeatmapTitle` — all date math stays inside this single boundary.
+- 12 new tests cover the date math (grid shape, last-cell-equals-today, Mon→Sun row order) and the UI flow (expand/collapse, cell click toggles storage + streak badge).
+
+### Changed
+- `useHabits` API: new `toggleDate(habitId, dateKey)` for arbitrary-date toggles. `toggleToday` becomes a thin wrapper — Phase 2/3 callers still work unchanged.
+- `<HabitCard />` API: now requires an `onToggleDate` prop in addition to `onToggle`. Card layout switched from a single inline row to a flex column so the heatmap can sit beneath the existing controls when expanded.
+
+### Decisions worth recording
+- **Monday-start columns** (ISO standard) — matches `date-fns` defaults and most non-US calendars.
+- **Today is editable in the heatmap** too — same toggle as the dedicated CheckButton at the top of the card; both stay in sync.
+- **No custom tooltip component** — native `title` attribute is good enough for v1 and gives free a11y.
+
+---
+
 ## [v0.3.0] — 2026-04-28
 
 Streaks land. Every habit card now shows the current consecutive-day streak (with a flame icon) and the all-time longest run. Phase 3 of the roadmap.
